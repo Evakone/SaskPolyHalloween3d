@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sask Polytech AR — Halloween 3D Experience</title>
+
+  <!-- Model Viewer (single engine) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer@^3.4.0/dist/model-viewer.min.js"></script>
+
+  <style>
+    /* Base styles */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+
+    .app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header with logo */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      width: 160px;
+      height: auto;
+    }
+
+    .logo-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Intro copy */
+    .viewer-container {
+      position: fixed;
+      top: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      padding: 2rem 1rem;
+      max-width: 520px;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    .viewer-container h1 {
+      margin: 0.5rem 0;
+      font-size: 2rem;
+      color: #ff6600;
+      letter-spacing: 0.02em;
+    }
+
+    .viewer-container .subheading {
+      display: block;
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      margin-top: 0.4rem;
+      color: #fff;
+      opacity: 0.85;
+    }
+
+    .viewer-container p {
+      margin: 0.5rem 0 1.5rem;
+      line-height: 1.4;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      pointer-events: auto;
+    }
+
+    /* AR button styling */
+    .ar-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #ff6600;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      transition: background 0.2s ease, transform 0.2s ease;
+      margin-bottom: env(safe-area-inset-bottom);
+    }
+
+    .ar-button:hover {
+      background: #ff7d26;
+      transform: translateY(-1px);
+    }
+
+    .ar-button:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .ar-button:disabled {
+      background: rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.6);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .ar-button.secondary {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .viewer-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #000;
+      --poster-color: #000;
+    }
+
+    model-viewer[ar-status] {
+      background: transparent !important;
+    }
+
+    /* Supporting UI */
+    .panel {
+      position: fixed;
+      left: 50%;
+      bottom: 76px;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: #bfc7cc;
+    }
+
+    input[type="range"] {
+      width: 220px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .btn {
+      background: rgba(255, 102, 0, 0.9);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+    }
+
+    .loader[hidden] {
+      display: none !important;
+      pointer-events: none !important;
+    }
+
+    .loader-inner {
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .muted {
+      color: #bfc7cc;
+      font-size: 0.9rem;
+    }
+
+    .qr-card {
+      position: fixed;
+      right: 24px;
+      bottom: 128px;
+      width: 180px;
+      padding: 1rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px dashed rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      z-index: 20;
+    }
+
+    .qr-card strong {
+      display: block;
+      color: #ff6600;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        width: 120px;
+      }
+
+      .viewer-container {
+        top: 88px;
+        padding: 1.5rem 1rem;
+      }
+
+      .viewer-container h1 {
+        font-size: 1.5rem;
+      }
+
+      .panel {
+        left: 50%;
+        bottom: 96px;
+        transform: translateX(-50%);
+      }
+
+      .qr-card {
+        position: static;
+        margin: 0 auto 24px;
+        width: auto;
+        max-width: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <img src="./Saskatchewan_Polytechnic%20small%20for%20web.png" alt="Saskatchewan Polytechnic" class="logo">
+    </header>
+
+    <div class="viewer-container">
+      <h1>Happy Halloween!🎃🧟‍♀️🧙🏽<span class="subheading">3D + AR Demo</span></h1>
+      <p>Preview the animated sign on a dark stage. Click and drag to orbit, adjust scale, or launch in AR to view at full size.</p>
+      <div class="cta-actions">
+        <button class="ar-button" id="enterAR">Launch AR Experience</button>
+        <button class="ar-button secondary" id="visitSite">Visit Sask Polytech</button>
+      </div>
+    </div>
+
+    <div class="viewer-shell">
+      <model-viewer id="mv"
+        src="./3D-Model-Demo-Halloween.glb"
+        alt="Sask Polytech Halloween sign"
+        ar ar-modes="webxr scene-viewer" ar-scale="auto" ar-placement="floor"
+        camera-controls auto-rotate auto-rotate-delay="6000" interaction-prompt="auto"
+        exposure="1.2"
+        draco-decoder-location="https://www.gstatic.com/draco/v1/decoders/"
+        environment-image="neutral" shadow-intensity="0.5" xr-environment>
+
+        <button id="hotspotBanner" slot="hotspot-banner" class="btn"
+          data-position="0 -0.0013 0.964" data-normal="0 0 -1" data-visibility-attribute="visible"
+          style="padding:6px 10px; font-size:.8rem;">Learn More</button>
+
+        <button slot="ar-button" class="ar-button">Launch in AR</button>
+      </model-viewer>
+    </div>
+
+    <div class="panel">
+      <div class="row">
+        <label>Scale: <span id="scaleVal">1.0x</span></label>
+        <input type="range" id="scale" min="0.2" max="2.5" step="0.1" value="1.0">
+      </div>
+    </div>
+
+    <aside class="qr-card">
+      <strong>Scan on Mobile</strong>
+      QR code placeholder — add once deployed so visitors can jump into AR on their phone.
+    </aside>
+
+    <div class="loader" id="loader" hidden>
+      <div class="loader-inner">
+        <div>Loading Halloween model…</div>
+        <div class="muted">Fast, minimal WebXR page</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const mv = document.getElementById('mv');
+    const scale = document.getElementById('scale');
+    const scaleVal = document.getElementById('scaleVal');
+    const loader = document.getElementById('loader');
+
+    // Show loader until first load
+    loader.hidden = false;
+    const hideLoader = () => { if (!loader.hidden) loader.hidden = true; };
+    mv.addEventListener('load', hideLoader, { once: true });
+    mv.addEventListener('error', (event) => {
+      console.error('model-viewer load error', event.detail);
+      const inner = document.querySelector('.loader-inner');
+      if (inner) {
+        inner.innerHTML = '<div>Unable to load model.</div><div class="muted">Check console for details.</div>';
+      }
+      hideLoader();
+    }, { once: true });
+    // Fallback: ensure loader never blocks UI if events misfire
+    setTimeout(hideLoader, 6000);
+
+    const clampScale = (s) => Math.max(0.2, Math.min(2.5, s));
+    const applyScale = (s) => {
+      const clamped = clampScale(s);
+      mv.scale = `${clamped} ${clamped} ${clamped}`;
+      scale.value = clamped;
+      scaleVal.textContent = `${clamped.toFixed(1)}x`;
+    };
+
+    // Basic scaling for preview
+    scale.addEventListener('input', (e) => {
+      const s = parseFloat(e.target.value);
+      applyScale(s);
+    });
+
+    // Explicit AR button (helps some browsers)
+    const enterAR = document.getElementById('enterAR');
+    if (mv.canActivateAR) {
+      enterAR.addEventListener('click', () => mv.activateAR());
+    } else {
+      enterAR.disabled = true;
+      enterAR.textContent = 'AR not supported on this device';
+    }
+    document.getElementById('visitSite').addEventListener('click', () => {
+      const url = 'https://saskpolytech.ca/';
+      const w = window.open(url, '_blank', 'noopener');
+      if (!w) location.href = url; // fallback if popup blocked
+    });
+
+    // Hotspot: open site; allow quick tuning via query (?hx=&hy=&hz= meters)
+    const hotspot = document.getElementById('hotspotBanner');
+    hotspot.addEventListener('click', () => {
+      const url = 'https://saskpolytech.ca/programs-and-courses';
+      const w = window.open(url, '_blank', 'noopener');
+      if (!w) location.href = url;
+    });
+    try {
+      const p = new URLSearchParams(location.search);
+      const units = (p.get('units') || '').toLowerCase(); // 'in' for inches, default meters
+      const IN = 0.0254; // inches→meters
+      // Support both meters (hx,hy,hz) and inches (hxi,hyi,hzi)
+      let hx = p.get('hx'), hy = p.get('hy'), hz = p.get('hz');
+      const hxi = p.get('hxi'), hyi = p.get('hyi'), hzi = p.get('hzi');
+      // Prefer explicit inch params if provided
+      if (hxi !== null) hx = (parseFloat(hxi) * IN).toString();
+      if (hyi !== null) hy = (parseFloat(hyi) * IN).toString();
+      if (hzi !== null) hz = (parseFloat(hzi) * IN).toString();
+      const fx = parseFloat(hx); const fy = parseFloat(hy); const fz = parseFloat(hz);
+      if (!Number.isNaN(fx) || !Number.isNaN(fy) || !Number.isNaN(fz)) {
+        const base = hotspot.dataset.position.split(' ').map(Number);
+        const nx = !Number.isNaN(fx) ? fx : base[0];
+        const ny = !Number.isNaN(fy) ? fy : base[1];
+        const nz = !Number.isNaN(fz) ? fz : base[2];
+        hotspot.dataset.position = `${nx} ${ny} ${nz}`;
+        console.log('[hotspot] position set to', hotspot.dataset.position, 'units:', units === 'in' ? 'inches' : 'meters');
+      }
+    } catch (e) { console.warn('Hotspot param parsing failed', e); }
+
+    // Keep hotspot on the side facing the camera
+    function updateHotspotSide() {
+      try {
+        const orbit = mv.getCameraOrbit(); // {theta, phi, radius}
+        const theta = orbit.theta; // degrees; 0 = +Z (front)
+        const front = Math.cos(theta * Math.PI/180) >= 0; // facing front
+        const pos = hotspot.dataset.position.split(' ').map(Number);
+        // Assume Z axis depth; flip sign based on camera side
+        const z = Math.abs(pos[2]) * (front ? 1 : -1);
+        const normalZ = front ? -1 : 1;
+        hotspot.dataset.position = `${pos[0]} ${pos[1]} ${z.toFixed(3)}`;
+        hotspot.dataset.normal = `0 0 ${normalZ}`;
+      } catch {}
+    }
+    mv.addEventListener('camera-change', updateHotspotSide);
+    mv.addEventListener('load', updateHotspotSide);
+
+    // Ensure animations start reliably on load (even with a single clip)
+    mv.addEventListener('load', () => {
+      try {
+        mv.setAttribute('camera-target', 'auto');
+        mv.setAttribute('camera-orbit', 'auto auto auto');
+        mv.setAttribute('field-of-view', '45deg');
+        if (typeof mv.resetTurntableRotation === 'function') {
+          mv.resetTurntableRotation();
+        }
+      } catch (err) {
+        console.warn('Camera auto framing failed', err);
+      }
+      applyScale(parseFloat(scale.value));
+      try {
+        const names = mv.availableAnimations || [];
+        if (names.length) {
+          mv.animationName = names[0];
+          mv.animationLoop = 'repeat';
+          mv.play();
+          // If multiple clips exist, sequence through them
+          if (names.length > 1) {
+            let i = 0; const next = () => { i = (i + 1) % names.length; mv.animationName = names[i]; mv.animationLoop = 'once'; mv.play(); };
+            mv.addEventListener('finished', next);
+          }
+        }
+      } catch (e) { console.warn('Animation start failed:', e); }
+    });
+
+  </script>
+</body>
+</html>
