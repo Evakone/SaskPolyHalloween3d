@@ -358,7 +358,7 @@
       <p>Preview the animated sign on a dark stage. Click and drag to orbit, adjust scale, or launch in AR to view at full size.</p>
       <div class="cta-actions">
         <button class="ar-button" id="enterAR">Launch AR Experience</button>
-        <button class="ar-button secondary" id="visitSite">Visit Sask Polytech</button>
+        <button class="ar-button secondary" id="visitSite">Other Graphic Offerings</button>
       </div>
     </div>
 
@@ -474,7 +474,7 @@
     };
     checkARSupport();
     document.getElementById('visitSite').addEventListener('click', () => {
-      const url = 'https://saskpolytech.ca/';
+      const url = 'https://saskpolytech.sharepoint.com/sites/LT/SitePages/Graphics.aspx';
       const w = window.open(url, '_blank', 'noopener');
       if (!w) location.href = url; // fallback if popup blocked
     });
