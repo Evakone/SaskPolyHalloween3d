@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sask Polytech 3D Learning — More Info</title>
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --accent: #ff6600;
+      --muted: rgba(255, 255, 255, 0.75);
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      --max-width: 780px;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+    }
+    body {
+      padding: 48px 24px 64px;
+      display: flex;
+      justify-content: center;
+    }
+    .page {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    header img {
+      width: 160px;
+      max-width: 45vw;
+      max-height: 64px;
+      height: auto;
+    }
+    header a {
+      color: var(--fg);
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 24px;
+      padding: 8px 18px;
+      font-weight: 600;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    header a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--accent);
+    }
+    h1 {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0 0 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    p {
+      line-height: 1.6;
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+    strong {
+      color: var(--fg);
+    }
+    .section-title {
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+    @media (max-width: 520px) {
+      body {
+        padding: 32px 16px 56px;
+      }
+      header {
+        justify-content: center;
+      }
+      header img {
+        width: 130px;
+        max-height: 48px;
+      }
+      header a {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <img src="./Saskatchewan_Polytechnic%20small%20for%20web.png" alt="Saskatchewan Polytechnic">
+      <a href="./">← Back to AR demo</a>
+    </header>
+
+    <main>
+      <h1>How 3D Models Enhance Learning</h1>
+      <p>
+        3D models offer students a physicality to learning concepts not available with traditional methods like photos or
+        technical illustrations. Through in-browser viewers, AR, VR, and 3D printed models, concepts can be replicated
+        exactly as they appear in reality, or abstracted to better illustrate a specific learning objective.
+      </p>
+      <p>
+        For more information, you can visit the <strong>3D Innovation Hub</strong>.
+      </p>
+
+      <h2 class="section-title">Why You Would Use Them</h2>
+      <p>
+        3D models are an active learning experience. They can be viewed from any angle, and can be pulled apart, animated,
+        and accessed by multiple students concurrently for the same learning experience. Expensive and dangerous pieces of
+        equipment can be shared with no danger of damage or injury. Objects not easily brought into a classroom can be made
+        accessible to students. Narrative experiences can be created to demonstrate a concept or step-by-step process.
+      </p>
+
+      <h2 class="section-title">How to Use Them in Brightspace or Interactive Panels?</h2>
+      <p>
+        Brightspace and 3D printing are currently the primary methods of interacting with 3D models that we offer. Models
+        can be embedded in Brightspace using Model Viewer running in an iframe to allow students to physically interact with
+        the model. They can also be rendered as static images and added as regular graphics.
+      </p>
+      <p>
+        We are currently piloting some new AR and VR interactives that can run just from scanning a code, and will hopefully
+        have more information about that soon.
+      </p>
+
+      <h2 class="section-title">How to Request Them</h2>
+      <p>
+        People can visit the GDA project request page (Graphic Requests) or contact the GDA team lead Alexis Watt
+        (<a href="mailto:watta@saskpolytech.ca" style="color: var(--accent); text-decoration: none;">watta@saskpolytech.ca</a>).
+      </p>
+    </main>
+  </div>
+</body>
+</html>

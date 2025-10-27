@@ -44,7 +44,9 @@
 
     .logo {
       width: 160px;
+      max-width: 50vw;
       height: auto;
+      max-height: 64px;
     }
 
     .logo-text {
@@ -273,6 +275,7 @@
       }
       .logo {
         width: 120px;
+        max-height: 48px;
       }
       .viewer-container {
         position: static;
@@ -479,7 +482,7 @@
     // Hotspot: open site; allow quick tuning via query (?hx=&hy=&hz= meters)
     const hotspot = document.getElementById('hotspotBanner');
     hotspot.addEventListener('click', () => {
-      const url = 'https://saskpolytech.ca/programs-and-courses';
+      const url = './learn-more.html';
       const w = window.open(url, '_blank', 'noopener');
       if (!w) location.href = url;
     });
