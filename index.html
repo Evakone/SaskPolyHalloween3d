@@ -43,7 +43,7 @@
 
     .logo {
       display: block;
-      width: min(160px, 45vw);
+      width: min(180px, 46vw);
       height: auto;
     }
 
@@ -60,6 +60,7 @@
       flex-direction: column;
       gap: 1.75rem;
       padding: 32px 1.5rem 72px;
+      justify-content: center;
     }
 
     /* Intro copy */
@@ -146,7 +147,7 @@
 
     model-viewer {
       width: 100%;
-      min-height: 70vh;
+      min-height: 75vh;
       display: block;
       background: #000;
       --poster-color: #000;
@@ -264,12 +265,15 @@
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (min-width: 1024px) {
       .content {
         flex-direction: row;
         align-items: flex-start;
+        justify-content: center;
         gap: 3rem;
         padding: 48px 5vw 96px;
       }
@@ -306,7 +310,7 @@
         padding: 0.75rem 1rem;
       }
       .logo {
-        width: min(140px, 55vw);
+        width: min(150px, 60vw);
       }
       .viewer-container {
         padding: 3.5rem 1.25rem 1.5rem;
@@ -331,7 +335,7 @@
         width: 100%;
       }
       model-viewer {
-        min-height: 60vh;
+        min-height: 70vh;
       }
       .panel {
         margin: 1.5rem auto;
@@ -370,13 +374,13 @@
 <body>
   <div class="app">
     <header class="header">
-      <img src="./Saskatchewan_Polytechnic%20small%20for%20web.png" alt="Saskatchewan Polytechnic" class="logo">
+      <img src="./SaskPolytech_small_web.png" alt="Saskatchewan Polytechnic" class="logo">
     </header>
 
     <div class="content">
       <div class="viewer-container">
         <h1 class="subheading" style="color:#ff6600; font-size:2.1rem; letter-spacing:0.04em;">3D + AR Demo</h1>
-        <p>Preview the animated Halloween 3D model on a dark stage. Click and drag to orbit, pinch to scale, or launch in AR to view it at full size. Tap Learn More for additional resources on the GA SharePoint showcase.</p>
+        <p>Preview the animated Halloween 3D model on a dark stage. Click and drag to orbit, pinch to scale, or launch in AR to experience it full-size. Tap Learn More to discover how immersive learning can enhance your teaching and training.</p>
         <div class="cta-actions">
           <button class="ar-button" id="enterAR">Launch AR Experience</button>
           <button class="ar-button secondary" id="visitSite">Other Graphic Offerings</button>
@@ -408,8 +412,8 @@
 
         <div class="panel">
           <div class="row">
-            <label>Scale: <span id="scaleVal">0.5x</span></label>
-            <input type="range" id="scale" min="0.2" max="2.5" step="0.1" value="0.5">
+            <label>Scale: <span id="scaleVal">1.0x</span></label>
+            <input type="range" id="scale" min="0.2" max="2.5" step="0.1" value="1.0">
           </div>
         </div>
       </div>
@@ -581,7 +585,7 @@
         } catch (err) {
           console.warn('Unable to capture base orbit', err);
         }
-        applyScale(parseFloat(scale.value) || 0.5);
+        applyScale(parseFloat(scale.value) || 1);
       });
       try {
         const names = mv.availableAnimations || [];
