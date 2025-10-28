@@ -380,7 +380,7 @@
     <div class="content">
       <div class="viewer-container">
         <h1 class="subheading" style="color:#ff6600; font-size:2.1rem; letter-spacing:0.04em;">3D + AR Demo</h1>
-        <p>Preview the animated Halloween 3D model on a dark stage. Click and drag to orbit, pinch to scale, or launch in AR to experience it full-size. Tap Learn More to discover how immersive learning can enhance your teaching and training.</p>
+        <p>Preview the animated Halloween 3D model on a dark stage. Click and drag to orbit, pinch to scale, or launch in Augmented Reality to experience it full-size. Tap Learn More to discover how immersive learning can enhance your teaching and training.</p>
         <div class="cta-actions">
           <button class="ar-button" id="enterAR">Launch AR Experience</button>
           <button class="ar-button secondary" id="visitSite">Other Graphic Offerings</button>
@@ -395,8 +395,8 @@
       <div class="viewer-column">
         <div class="viewer-shell">
           <model-viewer id="mv"
-            src="./3D-Model-Demo-Halloween-clean-opt.glb"
-            ios-src="./3D-Model-Demo-Halloween.usdz#callToAction=Explore%20in%20AR"
+            src="./3D-Model-Demo-Halloween-clean-1.glb"
+            ios-src="./3D-Model-Demo-Halloween-clean-1.usdz#scale=0.5&callToAction=Explore%20in%20AR"
             alt="Sask Polytech Halloween sign"
             ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" ar-placement="floor"
             camera-controls auto-rotate auto-rotate-delay="6000" interaction-prompt="auto"
@@ -450,6 +450,9 @@
 
     let baseOrbit = null;
 
+    const DEFAULT_PREVIEW_SCALE = 1;
+    const AR_PRESENTATION_SCALE = 0.5;
+
     const clampScale = (s) => Math.max(0.2, Math.min(2.5, s));
     const updateOrbitForScale = (scaleValue) => {
       if (!baseOrbit) return;
@@ -484,7 +487,7 @@
       enterAR.disabled = false;
       enterAR.dataset.enabled = 'true';
       enterAR.textContent = 'Launch AR Experience';
-      enterAR.addEventListener('click', () => mv.activateAR());
+      enterAR.addEventListener('click', launchAR);
     };
 
     const disableARButton = (message) => {
@@ -492,6 +495,30 @@
       enterAR.dataset.enabled = 'false';
       enterAR.textContent = message;
     };
+
+    function launchAR() {
+      const previousScaleValue = parseFloat(scale.value) || DEFAULT_PREVIEW_SCALE;
+      const restorePreviewScale = () => {
+        mv.removeEventListener('ar-status', arStatusListener);
+        applyScale(previousScaleValue);
+      };
+      const arStatusListener = (event) => {
+        if (event.detail.status === 'not-presenting') {
+          restorePreviewScale();
+        }
+      };
+      mv.addEventListener('ar-status', arStatusListener);
+      try {
+        mv.scale = `${AR_PRESENTATION_SCALE} ${AR_PRESENTATION_SCALE} ${AR_PRESENTATION_SCALE}`;
+        const result = mv.activateAR();
+        if (result && typeof result.then === 'function') {
+          result.catch(() => restorePreviewScale());
+        }
+      } catch (err) {
+        console.warn('AR launch failed', err);
+        restorePreviewScale();
+      }
+    }
 
     const checkARSupport = async () => {
       if (mv.canActivateAR) {
