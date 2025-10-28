@@ -498,8 +498,13 @@
 
     function launchAR() {
       const previousScaleValue = parseFloat(scale.value) || DEFAULT_PREVIEW_SCALE;
+      let fallbackHandle = null;
       const restorePreviewScale = () => {
         mv.removeEventListener('ar-status', arStatusListener);
+        if (fallbackHandle) {
+          clearTimeout(fallbackHandle);
+          fallbackHandle = null;
+        }
         applyScale(previousScaleValue);
       };
       const arStatusListener = (event) => {
@@ -508,6 +513,7 @@
         }
       };
       mv.addEventListener('ar-status', arStatusListener);
+      fallbackHandle = setTimeout(restorePreviewScale, 7000);
       try {
         mv.scale = `${AR_PRESENTATION_SCALE} ${AR_PRESENTATION_SCALE} ${AR_PRESENTATION_SCALE}`;
         const result = mv.activateAR();
@@ -612,7 +618,7 @@
         } catch (err) {
           console.warn('Unable to capture base orbit', err);
         }
-        applyScale(parseFloat(scale.value) || 1);
+        applyScale(parseFloat(scale.value) || DEFAULT_PREVIEW_SCALE);
       });
       try {
         const names = mv.availableAnimations || [];
